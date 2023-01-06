@@ -14,9 +14,8 @@ class PostController extends Controller
      */
     public function index()
     {
-       $posts = new Post;
-       $posts = $posts::all();
-       return view('posts.index');
+
+        return view('posts.index', ['posts' => Post::all()]);
     }
 
     /**
@@ -37,12 +36,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
         //validate the input
-        $request->validate([
+
+        $attribute = $request->validate([
             "name" => "required",
         ]);
+
         //create a new Post
-        Post::create($request->all());
+        Post::create($attribute);
 
         //redirect the user and send message
         return redirect()->route('posts.index');
@@ -56,7 +58,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+
+        return view('posts.show', [
+            'post' => $post
+        ]);
     }
 
     /**
@@ -67,7 +72,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+
+        return view('posts.edit', compact('post'));
+
     }
 
     /**
@@ -77,9 +84,19 @@ class PostController extends Controller
      * @param \App\Models\Post $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public
+    function update(Request $request, Post $post)
     {
-        //
+        dd($post);
+//validate the input
+        $request->validate([
+            "name" => "required",
+        ]);
+        //create a new Post
+        $post->update($request->all());
+
+        //redirect the user and send message
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -88,8 +105,11 @@ class PostController extends Controller
      * @param \App\Models\Post $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public
+    function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('posts.index');
     }
 }
+
